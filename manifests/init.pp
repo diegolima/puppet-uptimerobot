@@ -46,24 +46,14 @@
 # Copyright 2017 Diego Alencar Alves de Lima 
 #
 class uptimerobot (
-  String $key,
-  String $url,
-  String $friendlyname,
-  String $alert,
   String $format       = $uptimerobot::params::format,
   String $type         = $uptimerobot::params::type,
   String $api          = $uptimerobot::params::api,
   String $lockfile     = $uptimerobot::params::lockfile,
   String $curl_package = $uptimerobot::params::curl_package,
   String $curl_opts    = "-X POST -H \"Cache-Control: no-cache\" -H \"Content-Type: application/x-www-form-urlencoded\" -d",
-  String $curl_request = "api_key=$key&format=$format&type=$type&url=$url&friendly_name=$friendlyname&alert_contacts=$alert",
 ) inherits uptimerobot::params {
   package { "$curl_package":
     ensure => present,
-  }
-  exec { 'add into monitoring':
-    require => Package['curl'],
-    command => "/usr/bin/curl $curl_opts \"$curl_request\" $api > $lockfile",
-    unless  => "/usr/bin/test -f $lockfile",
   }
 }
