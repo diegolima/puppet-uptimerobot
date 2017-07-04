@@ -8,11 +8,11 @@ class uptimerobot::monitor (
 ) inherits uptimerobot {
   exec { 'add into monitoring':
     require => Package['curl'],
-    command => "$curl $curl_opts \"$curl_request\" $api > $lockfile",
-    unless  => "$grep $curl_response $lockfile",
+    command => "/usr/bin/curl $curl_opts \"$curl_request\" $api > $lockfile",
+    unless  => "/usr/bin/grep $curl_response $lockfile",
   }
   exec { 'check operation status':
     require => Exec['add into monitoring'],
-    command => "$grep $curl_response $lockfile",
+    command => "/usr/bin/grep $curl_response $lockfile",
   }
 }

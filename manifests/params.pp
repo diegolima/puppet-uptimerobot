@@ -6,8 +6,15 @@ class uptimerobot::params (
   String $alert    = '',
 ) {
   case $::osfamily {
+    'Debian': {
+      $curl_package = "curl"
+      $grep = "/bin/grep"
+      $curl = "/usr/bin/curl"
+    }
     default: {
       $curl_package = "curl"
+      $grep = "/usr/bin/grep"
+      $curl = "/usr/bin/curl"
     }
   }
 }

@@ -3,14 +3,11 @@ class uptimerobot::params (
   String $format   = 'json',
   String $lockfile = '/etc/uptimerobot.monitored',
   String $type     = '1',
-  String $alert,
-  String $key,
-  String $name,
-  String $url,
+  String $alert    = '',
 ) {
   case $::osfamily {
     default: {
-      $curl_package = "curl",
+      $curl_package = "curl"
     }
   }
 }

@@ -29,38 +29,31 @@
 #
 # @example
 #    class { 'uptimerobot':
-#      servers => [ 'pool.ntp.org', 'ntp.local.company.com' ],
+#      key          => 'abcd1234',
+#      url          => 'https://example.com',
+#      friendlyname => 'Example.com Website',
+#      alert        => '12345678',
 #    }
 #
 # Authors
 # -------
 #
-# Author Name <author@domain.com>
+# Diego Lima <diego@diegolima.org>
 #
 # Copyright
 # ---------
 #
-# Copyright 2017 Your name here, unless otherwise noted.
+# Copyright 2017 Diego Alencar Alves de Lima 
 #
-class uptimerobot {
-  String $key          = $uptimerobot::params::key,
+class uptimerobot (
   String $format       = $uptimerobot::params::format,
   String $type         = $uptimerobot::params::type,
-  String $url          = $uptimerobot::params::url,
-  String $name         = $uptimerobot::params::name,
-  String $alert        = $uptimerobot::params::alert,
   String $api          = $uptimerobot::params::api,
   String $lockfile     = $uptimerobot::params::lockfile,
   String $curl_package = $uptimerobot::params::curl_package,
-  String $curl_opts    = "-X POST -H \"Cache-Control: no-cache\" -H \"Content-Type: application/x-www-form-urlencoded\" -d"
-  String $curl_request = "api_key=$key&format=$format&type=$type&url=$url&friendly_name=$name&alert_contacts=$alert"
-
+  String $curl_opts    = "-X POST -H \"Cache-Control: no-cache\" -H \"Content-Type: application/x-www-form-urlencoded\" -d",
+) inherits uptimerobot::params {
   package { "$curl_package":
     ensure => present,
-  }
-  exec { 'add into monitoring':
-    require => Package['curl'],
-    command => "/usr/bin/curl $curl_opts $curl_request $api",
-    unless  => "/usr/bin/test -f $lockfile",
   }
 }
