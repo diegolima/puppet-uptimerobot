@@ -15,65 +15,76 @@
 
 ## Overview
 
-A one-maybe-two sentence summary of what the module does/what problem it solves.
-This is your 30 second elevator pitch for your module. Consider including
-OS/Puppet version it works with.
+This module aims to make it easy to monitor servers using uptimerobot's service.
+Currently its tested on both Ubuntu 14.04+ and Centos 6+, but should work on any
+system that has curl available.
 
 ## Module Description
 
-If applicable, this section should have a brief description of the technology
-the module integrates with and what that integration enables. This section
-should answer the questions: "What does this module *do*?" and "Why would I use
-it?"
+This module uses UptimeRobot's REST API to manage monitored servers. Currently
+it only allows adding servers into the monitoring service. New servers should
+appear as monitored on the dashboard.
 
-If your module has a range of functionality (installation, configuration,
-management, etc.) this is the time to mention it.
 
 ## Setup
 
 ### What uptimerobot affects
 
-* A list of files, packages, services, or operations that the module will alter,
-  impact, or execute on the system it's installed on.
-* This is a great place to stick any warnings.
-* Can be in list or paragraph form.
+* Installs the "curl" package on the monitored server, along with any dependencies.
+* Creates the file /etc/uptimerobot.monitored containing the API's response.
 
-### Setup Requirements **OPTIONAL**
+### Setup Requirements
 
-If your module requires anything extra before setting up (pluginsync enabled,
-etc.), mention it here.
+This module expects that a package named "curl" exists in your distribution.
+If curl is available from any other source it should be perfectly usable but
+changes to the module might be necessary.
 
 ### Beginning with uptimerobot
 
-The very basic steps needed for a user to get the module up and running.
+Install the module by placing it on your modules directory (tipically
+/etc/puppetlabs/code/environments/production/modules) or by using:
 
-If your most recent release breaks compatibility or requires particular steps
-for upgrading, you may wish to include an additional section here: Upgrading
-(For an example, see http://forge.puppetlabs.com/puppetlabs/firewall).
+```
+puppet module install diegolima-uptimerobot
+```
 
 ## Usage
 
-Put the classes, types, and resources for customizing, configuring, and doing
-the fancy stuff with your module here.
+To simply add the server into monitoring you can add the following class to your
+manifest:
+
+```
+class { 'uptimerobot::monitor':
+  key          => 'your-api-key-here',
+  url          => 'https://www.diegolima.org',
+  friendlyname => 'Diegolima.org',
+  alert        => 'id-of-users-that-should-receive-alerts,separated-by-commas',
+}
+```
+
+
 
 ## Reference
 
-Here, list the classes, types, providers, facts, etc contained in your module.
-This section should include all of the under-the-hood workings of your module so
-people know what the module is touching on their system but don't need to mess
-with things. (We are working on automating this section!)
+You can set up defaults using the uptimerobot::params class, though the included
+ones should be sensible enough for most users:
+
+```
+class { 'uptimerobot::params':
+  api      => 'https://api.uptimerobot.com/v2/newMonitor',
+  format   => 'json',
+  lockfile => '/etc/uptimerobot.monitored',
+  type     => '1',
+  alert    => '',
+}
+```
 
 ## Limitations
 
-This is where you list OS compatibility, version compatibility, etc.
+Due to the way the module currently works your system must have a package
+called "curl" even if curl is provided from somewhere else.
 
 ## Development
 
-Since your module is awesome, other users will want to play with it. Let them
-know what the ground rules for contributing are.
-
-## Release Notes/Contributors/Etc **Optional**
-
-If you aren't using changelog, put your release notes here (though you should
-consider using changelog). You may also add any additional sections you feel are
-necessary or important to include here. Please use the `## ` header.
+Feel free to fork this module and send pull requests with any changes/improvements
+you make!
